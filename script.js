@@ -1,4 +1,29 @@
-document.querySelector("button").addEventListener("click", (e) => {
+
+
+
+
+document.querySelector("button").addEventListener("click", async (e) => {
+  //Reset UI
+  document.querySelector(".ping").classList.add("hide");
+  document.querySelector(".loader-content").classList.add("hide");
+  document.querySelector(".loader").classList.remove("hide");
+  e.target.innerText = "Testing...";
+
+  //measure ping
+  let pingResult = "--";
+  try {
+    const pingStart = new Date().getTime();
+    const response = await fetch("https://httpbin.org/get?cache=" + pingStart, {
+      cache: "no-cache",
+      mode: "no-cors", // Bypass CORS issues
+    });
+    const pingEnd = new Date().getTime();
+    pingResult = pingEnd - pingStart;
+    document.querySelector(".ping").textContent = `Ping: ${pingResult}ms`;
+  } catch (e) {
+    document.querySelector(".ping").textContent = "Ping: Failed";
+  }
+
   var imageLink =
       "https://upload.wikimedia.org/wikipedia/commons/3/3e/Tokyo_Sky_Tree_2012.JPG",
     downloadSize = 8185374,
@@ -33,7 +58,7 @@ document.querySelector("button").addEventListener("click", (e) => {
       }
     };
     animate();
-
+    document.querySelector(".ping").classList.remove("hide");
     document.querySelector(".loader-content").classList.remove("hide");
     document.querySelector(".loader-content").classList.add("result");
     document.querySelector(".loader").classList.add("hide");
