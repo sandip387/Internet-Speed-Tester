@@ -15,7 +15,7 @@ async function measurePing() {
     } catch (error) {
       console.error(`Failed to ping ${server}`);
     }
-    console.log(server);
+   
   }
 
   return bestPing !== Infinity ? bestPing : null;
@@ -53,7 +53,6 @@ document.querySelector("button").addEventListener("click", async (e) => {
   time_start = new Date().getTime();
   var cacheImg = "?nn=" + time_start;
   downloadSrc.src = imageLink + cacheImg;
-  // console.log(downloadSrc);
   downloadSrc.onload = function () {
     //this function will trigger once the image loads
     time_end = new Date().getTime();
@@ -82,7 +81,5 @@ document.querySelector("button").addEventListener("click", async (e) => {
     document.querySelector(".loader").classList.add("hide");
     document.querySelector(".content").classList.remove("hide");
     e.target.innerText = "CHECK AGAIN";
-    // console.log(totalSpeed);
-    // console.log(timeDuration);
   };
 });
