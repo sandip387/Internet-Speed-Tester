@@ -1,6 +1,25 @@
+const servers = [
+  "https://google.com",
+  "https://cloudflare.com",
+  "https://httpbin.org",
+];
+async function measurePing() {
+  let bestPing = Infinity;
 
+  for (const server of servers) {
+    try {
+      const start = Date.now();
+      await fetch(server, { cache: "no-cache", mode: "no-cors" });
+      const ping = Date.now() - start;
+      if (ping < bestPing) bestPing = ping;
+    } catch (error) {
+      console.error(`Failed to ping ${server}`);
+    }
+    console.log(server);
+  }
 
-
+  return bestPing !== Infinity ? bestPing : null;
+}
 
 document.querySelector("button").addEventListener("click", async (e) => {
   //Reset UI
@@ -12,15 +31,14 @@ document.querySelector("button").addEventListener("click", async (e) => {
   //measure ping
   let pingResult = "--";
   try {
-    const pingStart = new Date().getTime();
-    const response = await fetch("https://httpbin.org/get?cache=" + pingStart, {
-      cache: "no-cache",
-      mode: "no-cors", // Bypass CORS issues
-    });
-    const pingEnd = new Date().getTime();
-    pingResult = pingEnd - pingStart;
-    document.querySelector(".ping").textContent = `Ping: ${pingResult}ms`;
-  } catch (e) {
+    const ping = await measurePing();
+    if (ping !== null) {
+      pingResult = ping;
+      document.querySelector(".ping").textContent = `Ping: ${pingResult}ms`;
+    } else {
+      document.querySelector(".ping").textContent = "Ping: Failed";
+    }
+  } catch (error) {
     document.querySelector(".ping").textContent = "Ping: Failed";
   }
 
@@ -35,7 +53,7 @@ document.querySelector("button").addEventListener("click", async (e) => {
   time_start = new Date().getTime();
   var cacheImg = "?nn=" + time_start;
   downloadSrc.src = imageLink + cacheImg;
-  console.log(downloadSrc);
+  // console.log(downloadSrc);
   downloadSrc.onload = function () {
     //this function will trigger once the image loads
     time_end = new Date().getTime();
